@@ -1,0 +1,12 @@
+upstream appserver {
+    server ${APP_SERVER_HOST_NAME}:${APP_SERVER_PORT};
+    keepalive 60;
+}
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://appserver;
+    }
+    # TODO: X-Forwarded_forなど
+}

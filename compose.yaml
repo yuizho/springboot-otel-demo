@@ -44,8 +44,8 @@ services:
     image: jaegertracing/all-in-one:latest
     ports:
       # https://www.jaegertracing.io/docs/next-release/getting-started/#all-in-one
-      - "16686:16686" # serve frontend
-      - "4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - "127.0.0.1:16686:16686" # serve frontend
+      - "127.0.0.1:4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
   loki:
     image: grafana/loki:latest
     # https://github.com/grafana/loki/issues/5513#issuecomment-2156115355

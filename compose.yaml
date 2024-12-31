@@ -18,9 +18,15 @@ services:
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+      # https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_logs_endpoint
+      # コレクターから送るときは http://loki:3100/otlp まで設定してやれば勝手にバージョンとかは埋めてくれるとのこと
+      # 今回は直接送るのでエンドポイントの最後まで指定する必要がある
+      # https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs-using-otlp
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://loki:3100/otlp/v1/logs
     depends_on:
       - mysql
       - jaeger
+      - loki
   nginx:
     image: nginx
     volumes:
@@ -40,3 +46,17 @@ services:
       # https://www.jaegertracing.io/docs/next-release/getting-started/#all-in-one
       - "16686:16686" # serve frontend
       - "4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+  loki:
+    image: grafana/loki:latest
+    # https://github.com/grafana/loki/issues/5513#issuecomment-2156115355
+    user: root
+    ports:
+      - "127.0.0.1:3100:3100"
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"

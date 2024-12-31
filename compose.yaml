@@ -17,8 +17,10 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
     depends_on:
       - mysql
+      - jaeger
   nginx:
     image: nginx
     volumes:
@@ -32,3 +34,9 @@ services:
       - RELIABLE_ADDRESS_SPACE=10.0.0.0/16
     depends_on:
       - app
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      # https://www.jaegertracing.io/docs/next-release/getting-started/#all-in-one
+      - "16686:16686" # serve frontend
+      - "4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP

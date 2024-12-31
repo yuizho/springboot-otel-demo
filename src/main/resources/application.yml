@@ -1,3 +1,6 @@
+otel:
+  service:
+    name: todo-app
 spring:
   sql:
     init:

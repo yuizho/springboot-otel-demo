@@ -23,6 +23,9 @@ services:
       # 今回は直接送るのでエンドポイントの最後まで指定する必要がある
       # https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs-using-otlp
       - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://loki:3100/otlp/v1/logs
+      # https://prometheus.io/docs/guides/opentelemetry/
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://prometheus:9090/api/v1/otlp/v1/metrics
+      - OTEL_METRIC_EXPORT_INTERVAL=5000
     depends_on:
       - mysql
       - jaeger
@@ -60,3 +63,11 @@ services:
     image: grafana/grafana:latest
     ports:
       - "127.0.0.1:3000:3000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    command: --web.enable-otlp-receiver
+    volumes:
+      - ./prometheus/prometheus.yml:/prometheus/prometheus.yml
+    ports:
+      - "127.0.0.1:9090:9090"

@@ -1,6 +1,9 @@
 otel:
   service:
     name: todo-app
+  instrumentation:
+    micrometer:
+      enabled: true
 spring:
   sql:
     init:

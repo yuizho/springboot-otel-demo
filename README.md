@@ -17,3 +17,7 @@ And login with `admin`/`admin`.
 
 Configure Loki from `http://localhost:3000/connections/datasources/new`.
 And then you can query logs from `http://localhost:3000/explore`.
+
+### Metrics (Prometheus)
+open `http://localhost:9090` in your browser.
+And query target metrics.

@@ -8,6 +8,7 @@ processors:
   batch:
 
 exporters:
+  debug:
   otlp/traces:
     # httpだと /v1/traces に送ってしまうのでgRPCの方に送る
     endpoint: http://jaeger:4317
@@ -33,12 +34,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/traces, otlp/oteltui]
+      exporters: [debug, otlp/traces, otlp/oteltui]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/metrics, otlp/oteltui]
+      exporters: [debug, otlphttp/metrics, otlp/oteltui]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/logs, otlp/oteltui]
+      exporters: [debug, otlphttp/logs, otlp/oteltui]

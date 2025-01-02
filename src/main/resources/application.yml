@@ -1,4 +1,6 @@
 otel:
+  propagators:
+    - tracecontext
   service:
     name: todo-app
   instrumentation:
@@ -8,3 +10,6 @@ spring:
   sql:
     init:
       mode: always
+backend:
+  host-name: localhost
+  port: 8080

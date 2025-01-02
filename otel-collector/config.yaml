@@ -17,6 +17,10 @@ exporters:
     endpoint: http://loki:3100/otlp
   otlphttp/metrics:
     endpoint: http://prometheus:9090/api/v1/otlp
+  otlp/oteltui:
+    endpoint: oteltui:4317
+    tls:
+      insecure: true
 
 extensions:
   health_check:
@@ -29,12 +33,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/traces]
+      exporters: [otlp/traces, otlp/oteltui]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/metrics]
+      exporters: [otlphttp/metrics, otlp/oteltui]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/logs]
+      exporters: [otlphttp/logs, otlp/oteltui]

@@ -84,3 +84,11 @@ services:
       - "127.0.0.1:13133:13133" # health_check extension
       - "127.0.0.1:4318:4318" # OTLP http receiver
       - "127.0.0.1:55679:55679" # zpages extension
+
+  oteltui:
+    image: ymtdzzz/otel-tui:latest
+    # Show TUI in your current terminal session
+    # $ docker compose attach oteltui
+    container_name: otel-tui
+    stdin_open: true
+    tty: true

@@ -7,7 +7,7 @@
 And then you can access to `http://localhost/todo` by your browser.
 Your request is handled by Nginx and forwarded to the Spring Boot server.
 
-## Otel Services
+## Otel Backends
 ### Trace (Jaeger)
 open `http://localhost:16686` in your browser.
 
@@ -21,3 +21,10 @@ And then you can query logs from `http://localhost:3000/explore`.
 ### Metrics (Prometheus)
 open `http://localhost:9090` in your browser.
 And query target metrics.
+
+### Trace, Log, Metrics (otel-tui)
+https://github.com/ymtdzzz/otel-tui
+
+```bash
+$ docker compose attach oteltui
+```

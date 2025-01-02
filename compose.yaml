@@ -17,19 +17,21 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+      # - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
       # https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_logs_endpoint
       # コレクターから送るときは http://loki:3100/otlp まで設定してやれば勝手にバージョンとかは埋めてくれるとのこと
       # 今回は直接送るのでエンドポイントの最後まで指定する必要がある
       # https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs-using-otlp
-      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://loki:3100/otlp/v1/logs
+      #- OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://loki:3100/otlp/v1/logs
       # https://prometheus.io/docs/guides/opentelemetry/
-      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://prometheus:9090/api/v1/otlp/v1/metrics
+      #- OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://prometheus:9090/api/v1/otlp/v1/metrics
       - OTEL_METRIC_EXPORT_INTERVAL=5000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318
     depends_on:
       - mysql
       - jaeger
       - loki
+      - collector
   nginx:
     image: nginx
     volumes:
@@ -48,7 +50,8 @@ services:
     ports:
       # https://www.jaegertracing.io/docs/next-release/getting-started/#all-in-one
       - "127.0.0.1:16686:16686" # serve frontend
-      - "127.0.0.1:4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - "127.0.0.1:5318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - "127.0.0.1:4317:4317" # accept OpenTelemetry Protocol (OTLP) over gRPC
   loki:
     image: grafana/loki:latest
     # https://github.com/grafana/loki/issues/5513#issuecomment-2156115355
@@ -71,3 +74,13 @@ services:
       - ./prometheus/prometheus.yml:/prometheus/prometheus.yml
     ports:
       - "127.0.0.1:9090:9090"
+
+  collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./otel-collector/config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "127.0.0.1:1888:1888" # pprof extension
+      - "127.0.0.1:13133:13133" # health_check extension
+      - "127.0.0.1:4318:4318" # OTLP http receiver
+      - "127.0.0.1:55679:55679" # zpages extension

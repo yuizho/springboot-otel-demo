@@ -14,16 +14,25 @@ Your request is handled by Nginx and forwarded to the Spring Boot server.
     Browser
     Terminal
     end
+
     subgraph otel backend
     Jaeger
     Loki
     Prometheus
     otel-tui
     end
+
+    subgraph app server
+    Frontend
+    Backend
+    end
+
     Browser --> NGINX
-    NGINX --> AppServer
-    AppServer --> MySQL
-    AppServer --telemetry data on Http by **opentelemetry-spring-boot-starter**---> OtelCollector
+    NGINX --> Frontend
+    Frontend --> Backend
+    Backend ---> MySQL
+    Backend --telemetry data on Http by **opentelemetry-spring-boot-starter**--> OtelCollector
+    Frontend --telemetry data on Http by **opentelemetry-spring-boot-starter**--> OtelCollector
     OtelCollector --traces on gRPC--> Jaeger
     OtelCollector --logs on Http--> Loki
     OtelCollector --metrics on Http--> Prometheus

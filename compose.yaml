@@ -13,6 +13,7 @@ services:
     image: "spring-htmx-demo:0.0.1-SNAPSHOT"
     ports:
       - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5005:5005"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db
       - SPRING_DATASOURCE_USERNAME=user
@@ -22,6 +23,8 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318
       - BACKEND_HOST_NAME=backend
       - BACKEND_PORT=8081
+      # https://spring.io/guides/gs/spring-boot-docker#:~:text=Debugging%20the%20Application%20in%20a%20Docker%20Container
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     depends_on:
       - mysql
       - jaeger
@@ -32,6 +35,7 @@ services:
     image: "spring-htmx-demo:0.0.1-SNAPSHOT"
     ports:
       - "127.0.0.1:8081:8081"
+      - "127.0.0.1:5006:5006"
     environment:
       - SERVER_PORT=8081
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db
@@ -40,6 +44,8 @@ services:
       - OTEL_SERVICE_NAME=todo-backend
       - OTEL_METRIC_EXPORT_INTERVAL=5000
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318
+      # https://spring.io/guides/gs/spring-boot-docker#:~:text=Debugging%20the%20Application%20in%20a%20Docker%20Container
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
     depends_on:
       - mysql
       - jaeger

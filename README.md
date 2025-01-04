@@ -4,7 +4,7 @@
 ./mvnw clean package && docker compose up 
 ```
 
-And then you can access to `http://localhost/todo` by your browser.
+And then you can access to `http://localhost/todo` by your browser to open demo app.
 Your request is handled by Nginx and forwarded to the Spring Boot server.
 
 ## Architecture Overview
@@ -29,7 +29,7 @@ Your request is handled by Nginx and forwarded to the Spring Boot server.
 
     Browser --> NGINX
     NGINX --> Frontend
-    Frontend --> Backend
+    Frontend --TraceContext data on Http by RestTemplate--> Backend
     Backend ---> MySQL
     Backend --telemetry data on Http by **opentelemetry-spring-boot-starter**--> OtelCollector
     Frontend --telemetry data on Http by **opentelemetry-spring-boot-starter**--> OtelCollector
